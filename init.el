@@ -26,7 +26,9 @@
   "Insert image with S filename."
   (interactive "sFilename: ")
   (insert
-   (concat (concat "\\begin{figure}[h!]\n  \\centering\n  \\includegraphics[width=8cm]{" s) "}\n\\end{figure}\n" )))
+   (concat
+    (concat "\\begin{figure}[h!]\n  \\centering\n  \\includegraphics[width=8cm]{" s)
+    ".png}\n\\end{figure}\n")))
 
 ;;; Add the melpa repo
 (require 'package)

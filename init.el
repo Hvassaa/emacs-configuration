@@ -1,97 +1,52 @@
-;;; Set GUI preferences
-(set-face-attribute 'default nil :height 150)
-(tool-bar-mode -1)
-(menu-bar-mode -1)
+;; do not use the customize interface, at all
+(setq custom-file "/dev/null")
+;; Disable auto backup
+(setq make-backup-files nil)
+;; disable the bell
+(setq ring-bell-function 'ignore)
+;; no scroll bar
 (scroll-bar-mode -1)
+;; show paren matches instantly
 (show-paren-mode t)
 (setq show-paren-delay 0)
+;; line numbers
 (dolist (hook '(prog-mode-hook text-mode-hook))
   (add-hook hook 'display-line-numbers-mode))
-(setq visible-bell t)
-(setq inhibit-startup-message t)
-;; Append color emoji font: 👌 😈
-(set-fontset-font t 'symbol "Noto Color Emoji" nil 'append)
-;; Use y-or-n instead of yes-or-no
-(defalias 'yes-or-no-p 'y-or-n-p)
-;; Disable backup-stuff
-(setq make-backup-files nil)
-;(setq auto-save-default nil)
-
-;;; Custom key binds
-(global-set-key (kbd "C-c m") 'compile)
-;;; auto fill-mode
+;; Spelling for text
+(add-hook 'text-mode-hook 'flyspell-mode)
+;; wrap lines
 (add-hook 'text-mode-hook 'auto-fill-mode)
-;;; Custom functions
-(defun latex-insert-image (s)
-  "Insert image with S filename."
-  (interactive "sFilename: ")
-  (insert
-   (concat
-    (concat "\\begin{figure}[h!]\n  \\centering\n  \\includegraphics[width=8cm]{" s)
-    ".png}\n\\end{figure}\n")))
 
+;;;;;;package manager config;;;;;
 ;;; Add the melpa repo
 (require 'package)
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
-
 ;;; Bootstrapping use-package
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 
-;;; modus-operandi best theme
-(use-package modus-themes
-  :ensure t
-  :config (load-theme 'modus-operandi t))
-
-;;; Package to hide modes from the modeline (integrates with use-package)
-(use-package diminish
-  :ensure t)
-(dolist (mode '(eldoc-mode LaTeX-mode reftex-mode auto-fill-function))
-  (diminish mode))
-
 ;;; Package that shows command-completions
 (use-package which-key
   :ensure t
-  :diminish
-  :config
-  (which-key-mode))
+  :config (which-key-mode))
 
-;;; Nicer mini-buffer completion, with vertical view
-(use-package selectrum
+;;; web-mode - mixing html/js/jsx/ts/tsx
+(use-package web-mode
   :ensure t
-  :config (selectrum-mode +1))
+  :mode (("\\.js\\'" . web-mode)
+         ("\\.jsx\\'" . web-mode)
+         ("\\.ts\\'" . web-mode)
+         ("\\.tsx\\'" . web-mode)
+         ("\\.html\\'" . web-mode)
+	 ("\\.json\\'" . web-mode)))
+  
 
-;;; filtering framework for selectrum and company
-(use-package prescient
-  :ensure t
-  :config (prescient-persist-mode +1))
-
-(use-package selectrum-prescient
-  :ensure t
-  :config (selectrum-prescient-mode +1))
-
-(use-package company-prescient
-  :ensure t
-  :config (company-prescient-mode +1))
-
-;;; Annotations in minibuffer completions (for Selectrum)
-(use-package marginalia
-  :ensure t
-  :init
-  (marginalia-mode)
-  ; -> taken from the github page <-
-  ;; When using Selectrum, ensure that Selectrum is refreshed when cycling annotations
-  (advice-add #'marginalia-cycle :after
-              (lambda () (when (bound-and-true-p selectrum-mode) (selectrum-exhibit))))
-  (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil)))
-
-;;; Setup of company
+;;; COMPANY ;;;
 (use-package company
   :ensure t
-  :diminish
   :config
   (setq company-idle-delay 0)
   (setq company-minimum-prefix-length 2)
@@ -104,37 +59,34 @@
   (prog-mode . company-mode)
   (text-mode . company-mode))
 
-;;; Use flycheck, syntax checker, instead of built-in flymake
+;;; FLYCHECK ;;;
 (use-package flycheck
   :ensure t
-  :diminish
   :init (global-flycheck-mode))
 
-(setq lsp-keymap-prefix "C-c l")
+;;; LSP ;;;
 (use-package lsp-mode
   :ensure t
-  :diminish
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-         (tuareg-mode . lsp)
-	 (html-mode . lsp)
 	 (javascript-mode . lsp)
+	 (typescript-mode . lsp)
+	 (web-mode . lsp)
          (lsp-mode . lsp-enable-which-key-integration))
-  :commands lsp-deferred)
+  :commands (lsp lsp-deffered))
+
 (use-package lsp-ui
   :ensure t
-  :diminish
   :commands lsp-ui-mode)
+
+;;; LSP Optimizations
 (setq gc-cons-threshold 100000000)
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
-(setq lsp-log-io nil)
-;; (setq lsp-idle-delay 0.500)
-;; (setq lsp-completion-provider :capf)
+(setq lsp-log-io nil) ; if set to true can cause a performance hit
 
-;; OCAML
-(use-package tuareg
-  :ensure t)
-
-;; LaTeX
+;;; LaTeX ;;;
 (use-package tex
   :defer t
   :hook (LaTeX-mode . reftex-mode) ; C-c = ...
@@ -145,6 +97,9 @@
   (setq TeX-parse-self t)
   (setq TeX-auto-save t)
   ; use reftex with auctex
-  (setq reftex-plug-into-AUCTeX t))
+  (setq reftex-plug-into-AUCTeX t)
+  (setq reftex-toc-split-windows-horizontally t)
+  (setq reftex-toc-split-windows-horizontally-fraction 0.3))
 
-;; END
+(provide 'init)
+;;; init.el ends here

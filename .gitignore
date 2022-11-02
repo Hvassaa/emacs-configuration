@@ -1,0 +1,6 @@
+auto-save-list/*
+custom.el
+elpa/*
+eshell/*
+init.el
+projects

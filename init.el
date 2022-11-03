@@ -1,4 +1,5 @@
 (setq ring-bell-function 'ignore)
+
 (setq custom-file "~/.emacs.d/custom.el")
 (scroll-bar-mode -1)
 (load-theme 'modus-operandi t)
@@ -28,3 +29,4 @@
 (setup (:package sly)
   (:option inferior-lisp-program "clisp"))
 (electric-pair-mode t)
+(setq electric-pair-preserve-balance nil)

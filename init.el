@@ -11,6 +11,10 @@
 
 (setup (:package which-key)
   (which-key-mode 1))
+(setup (:package orderless)
+  (:option completion-styles '(orderless basic))
+  (:option completion-category-defaults nil)
+  (:option completion-category-overrides '((file (styles basic partial-completion)))))
 (setup (:package vertico)
   (:package marginalia)
   (vertico-mode 1)
@@ -18,7 +22,12 @@
   (define-key vertico-map (kbd "TAB") #'minibuffer-complete))
 (setup (:package corfu)
   (:option corfu-auto t)
-  (:option global-corfu-mode t))
+  (:option global-corfu-mode t)
+  (:option corfu-auto-prefix 1)
+  (:option corfu-auto-delay 0)
+  (:option corfu-echo-documentation t))
+(setup (:package cape)
+  (add-to-list 'completion-at-point-functions #'cape-file))
 (setup (:package eglot))
 (setup LaTeX
   (:package auctex)
@@ -28,5 +37,6 @@
 (setup (:package rust-mode))
 (setup (:package sly)
   (:option inferior-lisp-program "clisp"))
+
 (electric-pair-mode t)
 (setq electric-pair-preserve-balance nil)

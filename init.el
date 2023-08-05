@@ -1,42 +1,28 @@
-(setq ring-bell-function 'ignore)
-
 (setq custom-file "~/.emacs.d/custom.el")
-(scroll-bar-mode -1)
-(load-theme 'modus-operandi t)
 
-(require 'package)
-(package-initialize)
-(unless (package-installed-p 'setup)
-  (package-install 'setup))
+(use-package which-key
+  :ensure t
+  :config (which-key-mode t))
 
-(setup (:package which-key)
-  (which-key-mode 1))
-(setup (:package orderless)
-  (:option completion-styles '(orderless basic))
-  (:option completion-category-defaults nil)
-  (:option completion-category-overrides '((file (styles basic partial-completion)))))
-(setup (:package vertico)
-  (:package marginalia)
-  (vertico-mode 1)
-  (marginalia-mode 1)
-  (define-key vertico-map (kbd "TAB") #'minibuffer-complete))
-(setup (:package corfu)
-  (:option corfu-auto t)
-  (:option global-corfu-mode t)
-  (:option corfu-auto-prefix 1)
-  (:option corfu-auto-delay 0)
-  (:option corfu-echo-documentation t))
-(setup (:package cape)
-  (add-to-list 'completion-at-point-functions #'cape-file))
-(setup (:package eglot))
-(setup LaTeX
-  (:package auctex)
-  (:option TeX-save-query nil))
-(setup text-mode
-  (:hook flyspell-mode auto-fill-mode))
-(setup (:package rust-mode))
-(setup (:package sly)
-  (:option inferior-lisp-program "clisp"))
+(use-package corfu
+  :ensure t
+  :custom
+  (corfu-auto t)
+  (corfu-auto-prefix 1)
+  :init (global-corfu-mode))
 
-(electric-pair-mode t)
-(setq electric-pair-preserve-balance nil)
+(use-package vertico
+  :ensure t
+  :config (vertico-mode t))
+
+(use-package marginalia
+  :ensure t
+  :init (marginalia-mode))
+
+(use-package orderless
+  :ensure t
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
+
+(global-display-line-numbers-mode t)

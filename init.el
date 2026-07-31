@@ -8,6 +8,8 @@
 (pixel-scroll-precision-mode 1)
 (load-theme 'modus-vivendi)
 
+(setopt eglot-connect-timeout nil)
+
 (use-package corfu
   :ensure t
   :custom ((global-corfu-mode 1)
@@ -17,8 +19,19 @@
 	   (corfu-popupinfo-mode 1)
 	   (corfu-popupinfo-delay 0.1)))
 
+(use-package markdown-mode
+  :ensure t)
+
+
 (use-package gdscript-mode
   :vc (:url "git@github.com:godotengine/emacs-gdscript-mode.git"))
 
 (use-package sly
   :ensure t)
+
+
+; (defun java-extract-local-variable ()
+;   ""
+;   (interactive)
+;   ;; (eglot-code-actions (point-min) (point-max) "Assign statement to new local variable")))
+;   (eglot-code-actions (line-beginning-position) (line-end-position) "Assign statement to new local variable"))

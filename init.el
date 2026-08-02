@@ -6,9 +6,21 @@
 (which-key-mode 1)
 (global-display-line-numbers-mode 1)
 (pixel-scroll-precision-mode 1)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(column-number-mode 1)
 (load-theme 'modus-vivendi)
+(set-frame-font "Ubuntu Sans Mono Medium 12" nil t)
 
 (setopt eglot-connect-timeout nil)
+
+(keymap-set minibuffer-local-completion-map "C-n" 'minibuffer-next-completion)
+(keymap-set minibuffer-local-completion-map "C-p" 'minibuffer-previous-completion)
+(setopt completion-auto-help 'always)
+(setopt completions-format 'one-column)
+(setopt completion-show-help nil)
+(setopt completion-ignore-case t)
 
 (use-package corfu
   :ensure t

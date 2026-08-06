@@ -27,7 +27,9 @@
     (setopt eglot-connect-timeout nil)
     (keymap-set eglot-mode-map "C-c a" 'eglot-code-actions)
     (add-to-list 'eglot-server-programs
-		 '(tsx-ts-mode . ("tsc" "--lsp" "--stdio")))))
+		 '(tsx-ts-mode
+		   typescript-ts-mode
+		   js-ts-mode . ("tsc" "--lsp" "--stdio")))))
 
 (add-to-list 'auto-mode-alist '("\\.ts" . typescript-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.tsx" . tsx-ts-mode))

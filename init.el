@@ -20,9 +20,18 @@
 (setopt completion-show-help nil)
 (setopt completion-ignore-case t)
 
+(setopt mode-require-final-newline nil) ;; WTF
+
 (with-eval-after-load 'eglot
-  (setopt eglot-connect-timeout nil)
-  (keymap-set eglot-mode-map "C-c a" 'eglot-code-actions))
+  (progn
+    (setopt eglot-connect-timeout nil)
+    (keymap-set eglot-mode-map "C-c a" 'eglot-code-actions)
+    (add-to-list 'eglot-server-programs
+		 '(tsx-ts-mode . ("tsc" "--lsp" "--stdio")))))
+
+(add-to-list 'auto-mode-alist '("\\.ts" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx" . tsx-ts-mode))
+(setopt typescript-ts-mode-indent-offset 4)
 
 (use-package corfu
   :ensure t
